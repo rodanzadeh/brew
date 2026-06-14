@@ -38,7 +38,6 @@ RSpec.describe Formula do
 
     specify "formula instantiation" do
       expect(f.name).to eq(name)
-      expect(f.specified_name).to eq(name)
       expect(f.full_name).to eq(name)
       expect(f.full_specified_name).to eq(name)
       expect(f.path).to eq(path)
@@ -56,7 +55,6 @@ RSpec.describe Formula do
       expect(f_alias.path).to eq(path)
       expect(f_alias.alias_path).to eq(alias_path)
       expect(f_alias.alias_name).to eq(alias_name)
-      expect(f_alias.specified_name).to eq(alias_name)
       expect(f_alias.specified_path).to eq(Pathname(alias_path))
       expect(f_alias.full_alias_name).to eq(alias_name)
       expect(f_alias.full_specified_name).to eq(alias_name)
@@ -77,7 +75,6 @@ RSpec.describe Formula do
 
       specify "formula instantiation" do
         expect(f.name).to eq(name)
-        expect(f.specified_name).to eq(name)
         expect(f.full_name).to eq(full_name)
         expect(f.full_specified_name).to eq(full_name)
         expect(f.path).to eq(path)
@@ -94,7 +91,6 @@ RSpec.describe Formula do
         expect(f_alias.path).to eq(path)
         expect(f_alias.alias_path).to eq(alias_path)
         expect(f_alias.alias_name).to eq(alias_name)
-        expect(f_alias.specified_name).to eq(alias_name)
         expect(f_alias.specified_path).to eq(Pathname(alias_path))
         expect(f_alias.full_alias_name).to eq(full_alias_name)
         expect(f_alias.full_specified_name).to eq(full_alias_name)
@@ -258,34 +254,6 @@ RSpec.describe Formula do
       FileUtils.touch f_versioned_with_full.path
 
       expect(f_versioned_with_full.full_formulae_names).to eq ["foo@2.0-full"]
-    end
-  end
-
-  describe "#full_formulae" do
-    let(:f) do
-      formula "foo" do
-        T.bind(self, T.class_of(Formula))
-        url "foo-1.0"
-      end
-    end
-
-    let(:f_full) do
-      formula "foo-full" do
-        T.bind(self, T.class_of(Formula))
-        url "foo-full-1.0"
-      end
-    end
-
-    before do
-      allow(Formulary).to receive(:load_formula_from_path).with(f_full.name, f_full.path).and_return(f_full)
-      allow(Formulary).to receive(:factory).with(f_full.name).and_return(f_full)
-      allow(f).to receive(:full_formulae_names).and_return([f_full.name])
-    end
-
-    it "returns array with sibling full formulae" do
-      FileUtils.touch f.path
-      FileUtils.touch f_full.path
-      expect(f.full_formulae).to eq [f_full]
     end
   end
 
@@ -565,7 +533,6 @@ RSpec.describe Formula do
       expect(f.installed_alias_path).to be_nil
       expect(f.installed_alias_name).to be_nil
       expect(f.full_installed_alias_name).to be_nil
-      expect(f.installed_specified_name).to eq(f.name)
       expect(f.full_installed_specified_name).to eq(f.name)
     end
 
@@ -579,7 +546,6 @@ RSpec.describe Formula do
     expect(f.installed_alias_path).to eq(alias_path)
     expect(f.installed_alias_name).to eq(alias_name)
     expect(f.full_installed_alias_name).to eq(alias_name)
-    expect(f.installed_specified_name).to eq(alias_name)
     expect(f.full_installed_specified_name).to eq(alias_name)
   end
 
@@ -601,7 +567,6 @@ RSpec.describe Formula do
       expect(f.installed_alias_path).to be_nil
       expect(f.installed_alias_name).to be_nil
       expect(f.full_installed_alias_name).to be_nil
-      expect(f.installed_specified_name).to eq(f.name)
       expect(f.full_installed_specified_name).to eq(f.full_name)
     end
 
@@ -616,7 +581,6 @@ RSpec.describe Formula do
     expect(f.installed_alias_path).to eq(alias_path)
     expect(f.installed_alias_name).to eq(alias_name)
     expect(f.full_installed_alias_name).to eq(full_alias_name)
-    expect(f.installed_specified_name).to eq(alias_name)
     expect(f.full_installed_specified_name).to eq(full_alias_name)
 
     FileUtils.rm_rf HOMEBREW_LIBRARY/"Taps/user"
